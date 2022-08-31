@@ -10,7 +10,7 @@ namespace Yields.MachineLearning
     {
         public static Action<string> AnswerEvent;
         public static Func<string> QuestionEvent;
-        public string? Text { get; set; }
+        public string Text { get; set; }
         private readonly bool isSdat = false;
         private readonly bool isAnaliz = false;
         private readonly bool isDoctor = false;
@@ -20,7 +20,7 @@ namespace Yields.MachineLearning
         private readonly bool isZakl = false;
         private readonly bool isTest = false;
         private readonly bool isUzi = false;
-        private readonly bool isUndefined = false;
+        private bool isUndefined = false;
 
         public Class1(string text)
         {
@@ -32,14 +32,14 @@ namespace Yields.MachineLearning
 
             Text = text?.DelProbels();
             Text = Text?.Replace(",", "");
-            string[]? str = Text?.Split(' ');
-            foreach (string? item in str)
+            string[] str = Text?.Split(' ');
+            foreach (string item in str)
             {
                 if (item.Trim().ToLower() == "сдать")
                 {
                     isSdat = true;
                 }
-                else if (item.Trim().ToLower() == "заб" || item.Trim().ToLower() == "забрать")
+                else if (item.Trim().ToLower() == "заб" || item.Trim().ToLower() == "забрать" || item.Trim().ToLower() == "получить")
                 {
                     isZabrat = true;
                 }
@@ -47,7 +47,7 @@ namespace Yields.MachineLearning
                 {
                     isProcedures = true;
                 }
-                else if (item.Trim().ToLower() == "анализ" || item.Trim().ToLower() == "анализы")
+                else if (item.Trim().ToLower() == "анализ" || item.Trim().ToLower() == "анализы" || item.Trim().ToLower().Contains("анализ"))
                 {
                     isAnaliz = true;
                 }
@@ -80,12 +80,6 @@ namespace Yields.MachineLearning
 
         public object Handling()
         {
-            if (isUndefined)
-            {
-                Console.WriteLine("мы вас не поняли!");
-                return false;
-            }
-
             if (isAnaliz)
             {
                 Analiz analiz = new(Text);
@@ -98,6 +92,10 @@ namespace Yields.MachineLearning
                 if (isZabrat)
                 {
                     analiz.GetAnaliz();
+                }
+                else
+                {
+                    isUndefined = true;
                 }
             }
 
@@ -164,6 +162,12 @@ namespace Yields.MachineLearning
             {
                 Procedure proc = new Procedure(Text);
                 proc.HandleText();
+            }
+
+            if (isUndefined)
+            {
+                Console.WriteLine("мы вас не поняли!");
+                return false;
             }
 
             return true;
